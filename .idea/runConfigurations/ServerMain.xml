@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ServerMain" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="webserver.dat.sem2.ServerMain" />
-    <module name="Modul1Network" />
+    <module name="Modul1NetworkHTTPv2" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="webserver.dat.sem2.*" />

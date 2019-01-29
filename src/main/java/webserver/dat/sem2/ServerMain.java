@@ -18,7 +18,7 @@ import java.util.Map.Entry;
 public class ServerMain {
 
     public static void main( String[] args ) throws Exception {
-        picoServer06();
+        picoServer01();
     }
 
     /*
@@ -26,10 +26,14 @@ public class ServerMain {
     It ignores all path and parameters and really just tell you what date it is
      */
     private static void picoServer01() throws Exception {
-        final ServerSocket server = new ServerSocket( 65080 );
+        final ServerSocket server = new ServerSocket( 8080 );
         System.out.println( "Listening for connection on port 8080 ...." );
         while ( true ) { // spin forever } }
-            try ( Socket socket = server.accept() ) {
+                try ( Socket socket = server.accept() ) {
+
+                BufferedReader br = new BufferedReader( new InputStreamReader( socket.getInputStream() ) );
+
+
                 Date today = new Date();
                 String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + today;
                 socket.getOutputStream().write( httpResponse.getBytes( "UTF-8" ) );
@@ -58,7 +62,13 @@ public class ServerMain {
                 }
                 System.out.println( ">>>>>>>>>>>>>>>" );
                 Date today = new Date();
-                String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + today;
+
+                String pageTemplate = "<!DOCTYPE html><html><body>$1</body></html>";
+                String page1Content = "<h1>Her er en overskrift</h1><p>Her er et afsnit fra Jons webserver</p>";
+                String samletSide = pageTemplate.replace("$1",page1Content);
+
+
+                String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + samletSide;
                 socket.getOutputStream().write( httpResponse.getBytes( "UTF-8" ) );
                 System.out.println( "<<<<<<<<<<<<<<<<<" );
             }
