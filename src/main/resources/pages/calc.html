@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<!--
+This is a sample html file used to confirm that our server 
+can read from the resource directory
+-->
+<html lang="da">
+    <head>
+        <title>Adding and muliplying form</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>Super - vi skal lige addere eller multiplicere to tal sammen</h1>
+        <form method="POST" action="/calcNumbers">
+            Første tal:<br>
+            <input type="text" name="firstnumber" value="17"><br>
+            Andet tal:<br>
+            <input type="text" name="secondnumber" value="13"><br><br>
+            <input type="submit" name = "operation" value="Add"> <input type="submit" name="operation" value="Multiply">
+        </form>
+    </body>
+</html>
