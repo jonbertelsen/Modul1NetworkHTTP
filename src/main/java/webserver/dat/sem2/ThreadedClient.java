@@ -17,8 +17,12 @@ public class ThreadedClient {
         mySocket.close();
     }
 
-    public static void main( String[] args ) throws Exception {
-        picoClient01();
+    public static void main( String[] args ) {
+        try {
+            picoClient01();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         System.out.println("Main terminated");
     }
 

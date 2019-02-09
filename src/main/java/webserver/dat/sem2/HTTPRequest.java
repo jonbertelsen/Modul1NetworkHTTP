@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,7 +83,7 @@ class HttpRequest  {
     while(true);
     byte[] buffer = read(in, contentLength);
     if ("application/x-www-form-urlencoded".equals(getContentType())) {
-      setQuery(new String(buffer, "UTF-8"));
+      setQuery(new String(buffer, StandardCharsets.UTF_8));
       body = new byte[0];
     }
     else body = buffer;

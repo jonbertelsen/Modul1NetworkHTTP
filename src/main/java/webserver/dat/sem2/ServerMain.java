@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Date;
 import java.util.Map.Entry;
@@ -36,7 +37,7 @@ public class ServerMain {
 
                 Date today = new Date();
                 String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + today;
-                socket.getOutputStream().write( httpResponse.getBytes( "UTF-8" ) );
+                socket.getOutputStream().write( httpResponse.getBytes(StandardCharsets.UTF_8) );
             }
 
         }
@@ -69,7 +70,7 @@ public class ServerMain {
 
 
                 String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + samletSide;
-                socket.getOutputStream().write( httpResponse.getBytes( "UTF-8" ) );
+                socket.getOutputStream().write( httpResponse.getBytes(StandardCharsets.UTF_8) );
                 System.out.println( "<<<<<<<<<<<<<<<<<" );
             }
 
@@ -109,7 +110,7 @@ public class ServerMain {
                 System.out.println( "==============" );
                 Date today = new Date();
                 String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + today;
-                socket.getOutputStream().write( httpResponse.getBytes( "UTF-8" ) );
+                socket.getOutputStream().write( httpResponse.getBytes(StandardCharsets.UTF_8) );
             }
         }
     }
@@ -129,7 +130,7 @@ public class ServerMain {
                 String path = root + req.getPath();
                 String html = getResourceFileContents( path );
                 String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + html;
-                socket.getOutputStream().write( httpResponse.getBytes( "UTF-8" ) );
+                socket.getOutputStream().write( httpResponse.getBytes(StandardCharsets.UTF_8) );
                 System.out.println( "<<<<<<<<<<<<<<<<<" );
             }
         }
@@ -145,19 +146,19 @@ public class ServerMain {
         System.out.println( "Listening for connection on port 8080 ...." );
         String root = "pages";
         while ( true ) { // keep listening (as is normal for a server)
-            Socket socket = server.accept();;
+            Socket socket = server.accept();
             try {
                 System.out.println( "-----------------" );
                 HttpRequest req = new HttpRequest( socket.getInputStream() );
                 String path = root + req.getPath();
                 String html = getResourceFileContents( path );
                 String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + html;
-                socket.getOutputStream().write( httpResponse.getBytes( "UTF-8" ) );
+                socket.getOutputStream().write( httpResponse.getBytes(StandardCharsets.UTF_8) );
                 System.out.println( "<<<<<<<<<<<<<<<<<" );
             } catch ( Exception ex ) {
                 String httpResponse = "HTTP/1.1 500 Internal error\r\n\r\n"
                         + "UUUUPS: " + ex.getLocalizedMessage();
-                socket.getOutputStream().write( httpResponse.getBytes( "UTF-8" ) );
+                socket.getOutputStream().write( httpResponse.getBytes(StandardCharsets.UTF_8) );
             } finally {
                 if ( socket != null ) {
                     socket.close();
@@ -177,7 +178,7 @@ public class ServerMain {
         String root = "pages";
         int count = 0;
         while ( true ) { // keep listening (as is normal for a server)
-            Socket socket = server.accept();;
+            Socket socket = server.accept();
             try {
                 System.out.println( "---- reqno: " + count + " ----" );
                 HttpRequest req = new HttpRequest( socket.getInputStream() );
@@ -185,9 +186,9 @@ public class ServerMain {
                 if ( path.endsWith( ".html" ) || path.endsWith( ".txt" ) ) {
                     String html = getResourceFileContents( root+path );
                     String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + html;
-                    socket.getOutputStream().write( httpResponse.getBytes( "UTF-8" ) );
+                    socket.getOutputStream().write( httpResponse.getBytes(StandardCharsets.UTF_8) );
                 } else {
-                    String res = "";
+                    String res;
                     switch ( path ) {
                         case "/addournumbers":
                             res = addOurNumbers( req );
@@ -196,12 +197,12 @@ public class ServerMain {
                             res = "Unknown path: " + path;
                     }
                     String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + res;
-                    socket.getOutputStream().write( httpResponse.getBytes( "UTF-8" ) );
+                    socket.getOutputStream().write( httpResponse.getBytes(StandardCharsets.UTF_8) );
                 }
             } catch ( Exception ex ) {
                 String httpResponse = "HTTP/1.1 500 Internal error\r\n\r\n"
                         + "UUUUPS: " + ex.getLocalizedMessage();
-                socket.getOutputStream().write( httpResponse.getBytes( "UTF-8" ) );
+                socket.getOutputStream().write( httpResponse.getBytes(StandardCharsets.UTF_8) );
             } finally {
                 if ( socket != null ) {
                     socket.close();
