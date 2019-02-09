@@ -5,8 +5,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Stream;
 
 /**
  The purpose of ServerMain is to...
@@ -15,8 +18,17 @@ import java.util.concurrent.Executors;
  */
 public class ThreadedServer {
 
+    private static final String line = "-----------------------------------------";
+
     public static void main( String[] args ) throws Exception {
-        picoServer06();
+        //picoServer06();
+
+        System.out.println(line+"\n using current thread context loader\n"+line);
+        loadResourceWithContextLoader("pages/index.html");
+        loadResourceWithContextLoader("/index.html");
+        loadResourceWithContextLoader("pages/adding.html");
+        loadResourceWithContextLoader("/adding.html");
+
     }
 
     /*
@@ -81,7 +93,7 @@ public class ThreadedServer {
         String root = "pages";
         int count = 0;
 
-        ExecutorService workingJack = Executors.newFixedThreadPool( 17 );
+        ExecutorService workingJack = Executors.newFixedThreadPool( 100 );
 
         while ( true ) { // keep listening (as is normal for a server)
             Socket socket = server.accept();;
@@ -125,6 +137,9 @@ public class ThreadedServer {
         try {
             String path = req.getPath();
             String httpResponse = "";
+            //int pause = (int)(Math.random() * 20000.0);
+            //Thread.sleep(pause);
+            //System.out.println("Pause i " + pause + " ms");
             switch (getFileType(path)){
                 case "html":
                 case "txt":
@@ -156,7 +171,7 @@ public class ThreadedServer {
                         @Override
                         public void run() {
                             try {
-                                pico06MakePathResponseTask(socket, req, path);
+                                pico06MakePathResponseTask(root,socket, req, path);
                             } catch (Exception ex) {
                                 System.out.println(ex.getMessage());
                             }
@@ -174,7 +189,10 @@ public class ThreadedServer {
     private static void pico06MakeFileResponseTask(String root, Socket socket, String path) throws Exception {
         try {
             String httpResponse;
+
             String html = getResourceFileContents(root + path);
+            System.out.println("Trådnavn: " + Thread.currentThread().getName());
+
             httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + html;
             socket.getOutputStream().write(httpResponse.getBytes("UTF-8"));
         } catch (Exception ex){
@@ -188,12 +206,14 @@ public class ThreadedServer {
         }
     }
 
-    private static void pico06MakePathResponseTask(Socket socket, HttpRequest req, String path) throws IOException {
+    private static void pico06MakePathResponseTask(String root, Socket socket, HttpRequest req, String path) throws IOException {
 
         try {
             String httpResponse;
             String res = "";
             switch (path) {
+                case "/":
+                    pico06MakeFileResponseTask(root, socket, "/index.html");
                 case "/addournumbers":
                     res = addOurNumbers(req);
                     break;
@@ -262,6 +282,7 @@ public class ThreadedServer {
         URL url = classLoader.getResource( fileName );
         // Jeg har indsat .replace og udskifter %20 med mellemrum, da det ellers ikke virker
         String test = url.getFile().replace("%20", " ");
+        System.out.println("Path: " + test);
         File file = new File( url.getFile().replace("%20", " ") );
         String content = new String( Files.readAllBytes( file.toPath() ) );
         return content;
@@ -273,7 +294,9 @@ public class ThreadedServer {
         URL url = classLoader.getResource( fileName );
         // Jeg har indsat .replace og udskifter %20 med mellemrum, da det ellers ikke virker
         String test = url.getFile().replace("%20", " ");
-        File file = new File( url.getFile().replace("%20", " ") );
+        test = test.replace("!","");
+        File file = new File( test );
+        System.out.println("Filepath: " + test);
         byte[] content = Files.readAllBytes( file.toPath() );
         return content;
     }
@@ -334,5 +357,54 @@ public class ThreadedServer {
             + "        <a href=\"adding.html\">Læg to andre tal sammen</a>\n"
             + "    </body>\n"
             + "</html>\n";
+
+    private void loadResource (String resource) throws IOException {
+        URL u = this.getClass().getResource(resource);
+        loadResourceByUrl(u, resource);
+    }
+
+    private static void loadResourceWithContextLoader(String resource) throws IOException {
+        URL u = Thread.currentThread().getContextClassLoader().getResource(resource);
+        loadResourceByUrl(u, resource);
+    }
+
+    private static void loadResourceWithSystemClassLoader (String resource) throws IOException {
+        URL u = ClassLoader.getSystemClassLoader().getResource(resource);
+        loadResourceByUrl(u, resource);
+    }
+
+    private static void loadResourceByUrl2 (URL u, String resource) throws IOException {
+        System.out.println("-> attempting input resource: "+resource);
+        if (u != null) {
+            String path = u.getPath();
+            // Jeg har indsat .replace og udskifter %20 med mellemrum, da det ellers ikke virker
+            path = path.replace("%20", " ");
+            //test = test.replace("!","");
+            path = path.replaceFirst("^/(.:/)", "$1");
+            System.out.println("    absolute resource path found :\n    " + path);
+            String s = new String(Files.readAllBytes(Paths.get(path)));
+            System.out.println("    file content: "+s);
+        } else {
+            System.out.println("    no resource found: " + resource);
+        }
+    }
+
+    private static void loadResourceByUrl (URL u, String resource) throws IOException {
+        System.out.println("-> attempting input resource: "+resource);
+        if (u != null) {
+            String path = u.getPath();
+            // Jeg har indsat .replace og udskifter %20 med mellemrum, da det ellers ikke virker
+            path = path.replace("%20", " ");
+            //path = path.replace("\!","");
+            //path = path.replaceFirst("^/(.:/)", "$1");
+            System.out.println("    absolute resource path found :\n    " + path);
+            String s = new String(Files.readAllBytes(Paths.get(path)));
+            System.out.println("    file content: "+s);
+        } else {
+            System.out.println("    no resource found: " + resource);
+        }
+    }
+
+
 
 }
