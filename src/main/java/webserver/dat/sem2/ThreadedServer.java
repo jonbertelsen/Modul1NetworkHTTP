@@ -16,13 +16,6 @@ public class ThreadedServer {
 
     public static void main( String[] args ) throws Exception {
         picoServer06();
-/*
-        System.out.println(line+"\n using current thread context loader\n"+line);
-        loadResourceWithContextLoader("pages/index.html");
-        loadResourceWithContextLoader("/index.html");
-        loadResourceWithContextLoader("pages/adding.html");
-        loadResourceWithContextLoader("/adding.html");
-*/
     }
 
     /*

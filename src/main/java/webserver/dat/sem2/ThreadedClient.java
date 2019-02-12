@@ -27,7 +27,7 @@ public class ThreadedClient {
     }
 
     private static void picoClient01() throws Exception {
-        String hostName = "localhost";
+        String hostName = "http://188.166.161.47";
         int portNumber = 8080;
         String message = "GET /index.html HTTP/1.0\r\n\r\n";
 
@@ -35,7 +35,7 @@ public class ThreadedClient {
 
         try {
             // Fetch webpage 100 times:
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < 1000; i++) {
                 final int number = i;
                 workingJack.execute(new Runnable() {
                     @Override
